@@ -3,9 +3,12 @@ const nanoid = require('nanoid');
 const Links = require('../modals/Links');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    Links.find()
-        .then(links => res.send(links))
+router.get('/:id', (req, res) => {
+    Links.findOne({shortUrl: req.params.id})
+        .then(result => {
+            if (result) return res.status(301).redirect(result.originalUrl);
+            res.sendStatus(404);
+        })
         .catch(() => res.sendStatus(500));
 });
 
